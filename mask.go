@@ -50,7 +50,7 @@ func parseColumnName(field reflect.StructField) (columnName string, ok bool) {
 		}
 	}
 
-	structValues := strings.Split(tag, ";")
+	structValues := strings.Split(tag, ",")
 	for _, v := range structValues {
 		kv := strings.Split(v, ":")
 		if len(kv) != 2 {
