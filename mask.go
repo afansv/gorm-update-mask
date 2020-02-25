@@ -1,4 +1,4 @@
-package main
+package gorm_update_mask
 
 import (
 	"reflect"
