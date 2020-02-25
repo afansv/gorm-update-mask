@@ -8,7 +8,7 @@ import (
 	"github.com/stoewer/go-strcase"
 )
 
-func Mask(model interface{}, updatePaths []string) (map[string]interface{}, error) {
+func Mask(model interface{}, updatePaths []string) map[string]interface{} {
 	t := reflect.TypeOf(model)
 
 	fields := structs.Names(model)
@@ -28,7 +28,7 @@ func Mask(model interface{}, updatePaths []string) (map[string]interface{}, erro
 		}
 	}
 
-	return mask, nil
+	return mask
 }
 
 func isStringInArray(s string, ar []string) bool {
