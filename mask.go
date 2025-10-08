@@ -9,14 +9,30 @@ import (
 )
 
 func Mask(model interface{}, updatePaths []string) map[string]interface{} {
+	v := reflect.ValueOf(model)
 	t := reflect.TypeOf(model)
+
+	if t.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return make(map[string]interface{})
+		}
+		v = v.Elem()
+		t = t.Elem()
+	}
+
+	if t.Kind() != reflect.Struct {
+		return make(map[string]interface{})
+	}
 
 	fields := structs.Names(model)
 
 	mask := make(map[string]interface{})
 
 	for _, fName := range fields {
-		field, _ := t.FieldByName(fName)
+		field, ok := t.FieldByName(fName)
+		if !ok {
+			continue
+		}
 
 		columnName, ok := parseColumnName(field)
 		if !ok {
@@ -24,7 +40,10 @@ func Mask(model interface{}, updatePaths []string) map[string]interface{} {
 		}
 
 		if isStringInArray(columnName, updatePaths) {
-			mask[columnName] = reflect.ValueOf(model).FieldByName(fName).Interface()
+			fieldValue := v.FieldByName(fName)
+			if fieldValue.IsValid() {
+				mask[columnName] = fieldValue.Interface()
+			}
 		}
 	}
 
